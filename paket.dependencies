@@ -1,0 +1,10 @@
+source https://api.nuget.org/v3/index.json
+
+storage: none
+framework: netcore3.1, netstandard2.0, netstandard2.1
+
+// [ FAKE GROUP ]
+group NetcoreBuild
+    source https://api.nuget.org/v3/index.json
+
+    nuget Fake.Core.Target prerelease
