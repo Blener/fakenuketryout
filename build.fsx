@@ -1,0 +1,1 @@
+#r "packages/FAKE/tools/FakeLib.dll"
