@@ -19,3 +19,13 @@ steps:
   - bash: |
       chmod +x fake_build.sh
       ./fake_build.sh
+
+  - task: AppCenterDistribute@3
+    inputs:
+      serverEndpoint: 'App center connection'
+      appSlug: 'TheCodingSanta/FakeNukeTryout'
+      appFile: '/artifacts'
+      symbolsOption: 'Android'
+      releaseNotesOption: 'input'
+      releaseNotesInput: 'First attempt to connect'
+      destinationType: 'groups'
