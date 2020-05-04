@@ -1,2 +1,3 @@
 dotnet tool restore
-dotnet fake run build.fsx
+dotnet paket install
+dotnet fake -v run fake_build.fsx
