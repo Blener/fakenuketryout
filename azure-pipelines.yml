@@ -14,4 +14,6 @@ variables:
   outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
 
 steps:
-- bash: fake_build.cmd
+  - task: NuGetToolInstaller@1
+  
+  - bash: ./fake_build.sh
