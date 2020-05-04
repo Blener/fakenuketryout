@@ -48,7 +48,7 @@ module App =
           content = View.StackLayout(padding = Thickness 20.0, verticalOptions = LayoutOptions.Center,
             children = [ 
                 View.Label(text = sprintf "%d" model.Count, horizontalOptions = LayoutOptions.Center, width=200.0, horizontalTextAlignment=TextAlignment.Center)
-                View.Button(text = "Increment", command = (fun () -> dispatch Increment), horizontalOptions = LayoutOptions.Center)
+                View.Button(text = "Increment", command = (fun () -> dispatch Increment), horizontalOptions = LayoutOptions.Center, automationId = "btnIncrement")
                 View.Button(text = "Decrement", command = (fun () -> dispatch Decrement), horizontalOptions = LayoutOptions.Center)
                 View.Label(text = "Timer", horizontalOptions = LayoutOptions.Center)
                 View.Switch(isToggled = model.TimerOn, toggled = (fun on -> dispatch (TimerToggled on.Value)), horizontalOptions = LayoutOptions.Center)
