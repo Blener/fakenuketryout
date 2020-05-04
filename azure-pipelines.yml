@@ -16,4 +16,4 @@ variables:
 steps:
   - task: NuGetToolInstaller@1
   
-  - bash: ./fake_build.sh
+  - bash: chmod +x fake_build.sh
