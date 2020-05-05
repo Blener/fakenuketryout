@@ -24,7 +24,7 @@ steps:
     inputs:
       serverEndpoint: 'App center connection'
       appSlug: 'TheCodingSanta/FakeNukeTryout'
-      appFile: '/artifacts'
+      appFile: '/artifacts/com.codingsanta.fakenuketryout-Signed.apk'
       symbolsOption: 'Android'
       releaseNotesOption: 'input'
       releaseNotesInput: 'First attempt to connect'
