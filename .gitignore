@@ -10,3 +10,6 @@ paket-files
 build_output/
 .idea/
 testapp*/
+.fake
+.ionide
+artifacts/

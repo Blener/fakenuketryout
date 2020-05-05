@@ -2,11 +2,14 @@ open Fake.Core
 open Fake.IO
 open Fake.DotNet
 open Fake.Core.TargetOperators
+open Fake.IO.Globbing.Operators
 
 let pclBuildDir = Path.getFullName "./FakeNukeTryout/bin/Debug"
 let pclDir = Path.getFullName "./FakeNukeTryout" 
 let androidBuildDir = Path.getFullName "./FakeNukeTryout.Android/bin/Debug"
 let androidProj = Path.getFullName "./FakeNukeTryout.Android/FakeNukeTryout.Android.fsproj"
+let apkOutputFile = Path.getFullName (sprintf "%s/*.apk" androidBuildDir)
+let artifactsFolder = Path.getFullName "./artifacts"
 
 let runDotNet cmd dir =
     let result = DotNet.exec (DotNet.Options.withWorkingDirectory dir) cmd ""
@@ -41,6 +44,15 @@ Target.create "BuildAndroid" (fun _ ->
     Trace.trace @"---Android project builded---"
 )
 
-"CleanPCL" ==> "RestorePackages" ==> "BuildPCL" ==> "BuildAndroid"
+Target.create "PostBuildAndroid" (fun _ ->
+    Directory.ensure artifactsFolder
+    Trace.trace @"---Ensured artifacts folder is created---"
+    let apkGlobbing = !! apkOutputFile
+    for apkFile in apkGlobbing do
+        Shell.moveFile artifactsFolder apkFile
+        Trace.trace <| sprintf @"---Moved to Artifacts Folder %s---" apkFile
+)
 
-Target.runOrDefault "BuildAndroid"
+"CleanPCL" ==> "RestorePackages" ==> "BuildPCL" ==> "BuildAndroid" ==> "PostBuildAndroid"
+
+Target.runOrDefault "PostBuildAndroid"
