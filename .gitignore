@@ -13,3 +13,5 @@ testapp*/
 .fake
 .ionide
 artifacts/
+.fake
+.ionide

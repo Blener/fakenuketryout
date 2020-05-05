@@ -3,56 +3,40 @@ open Fake.IO
 open Fake.DotNet
 open Fake.Core.TargetOperators
 open Fake.IO.Globbing.Operators
+open Fake.DotNet.Xamarin
+open System.IO
 
-let pclBuildDir = Path.getFullName "./FakeNukeTryout/bin/Debug"
-let pclDir = Path.getFullName "./FakeNukeTryout" 
-let androidBuildDir = Path.getFullName "./FakeNukeTryout.Android/bin/Debug"
-let androidProj = Path.getFullName "./FakeNukeTryout.Android/FakeNukeTryout.Android.fsproj"
-let apkOutputFile = Path.getFullName "./FakeNukeTryout.Android/bin/*/*.apk"
-let artifactsFolder = Path.getFullName "./artifacts"
+let pclBuildDir = "./FakeNukeTryout/bin/Release"
+let androidBuildDir = "./FakeNukeTryout.Android/bin/Release"
+let androidProj = "./FakeNukeTryout.Android/FakeNukeTryout.Android.fsproj"
+let artifactsFolder = "./artifacts"
 
 let runDotNet cmd dir =
     let result = DotNet.exec (DotNet.Options.withWorkingDirectory dir) cmd ""
     if result.ExitCode <> 0 then failwithf "'dotnet %s' failed in %s" cmd dir
 
-Target.create "CleanPCL" (fun _ ->
+Target.create "EnsureCleanFolders" (fun _ ->
+    Directory.ensure pclBuildDir
     Shell.cleanDir pclBuildDir
-    Trace.trace @"---PCL Project Cleaned---"
-)
-
-Target.create "RestorePackages" (fun _ ->
-    NuGet.Restore.RestorePackages()
-    Trace.trace @"---Packages Restored---"
-)
-
-Target.create "BuildPCL" (fun _ ->
-    runDotNet "build" pclDir
-    Trace.trace @"---PCL Project builded---"
-)
-
-Target.create "CleanAndroid" (fun _ ->
+    Trace.trace @"---PCL build folder Cleaned---"
+    Directory.ensure androidBuildDir
     Shell.cleanDir androidBuildDir
-    Trace.trace @"---Android project cleaned---"
+    Trace.trace @"---Android build folder cleaned---"
+    Directory.ensure artifactsFolder
+    Shell.cleanDir artifactsFolder
+    Trace.trace @"---Artifacts folder cleaned"
 )
 
 Target.create "BuildAndroid" (fun _ ->
-    let setParameters (defaults: MSBuildParams) =
-        { defaults with Verbosity = Some(Detailed)
-                        Targets = ["Build"]
-                        Properties = [ "Configuration", "Debug" ] }
-    MSBuild.build setParameters androidProj
+    AndroidPackage (fun defaults ->
+        { defaults with 
+            ProjectPath = androidProj
+            Configuration = "Release"
+            OutputPath = androidBuildDir })
+    |> fun apkFile -> apkFile.CopyTo(Path.Combine(artifactsFolder, apkFile.Name)) |> ignore
     Trace.trace @"---Android project builded---"
 )
 
-Target.create "PostBuildAndroid" (fun _ ->
-    Directory.ensure artifactsFolder
-    Trace.trace @"---Ensured artifacts folder is created---"
-    let apkGlobbing = !! apkOutputFile
-    for apkFile in apkGlobbing do
-        Shell.moveFile artifactsFolder apkFile
-        Trace.trace <| sprintf @"---Moved to Artifacts Folder %s---" apkFile
-)
+"EnsureCleanFolders" ==> "BuildAndroid"
 
-"CleanPCL" ==> "RestorePackages" ==> "BuildPCL" ==> "BuildAndroid" ==> "PostBuildAndroid"
-
-Target.runOrDefault "PostBuildAndroid"
+Target.runOrDefault "BuildAndroid"

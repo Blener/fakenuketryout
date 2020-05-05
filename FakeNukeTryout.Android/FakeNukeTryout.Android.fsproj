@@ -47,6 +47,7 @@
     <ConsolePause>False</ConsolePause>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidBuildApplicationPackage>true</AndroidBuildApplicationPackage>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />

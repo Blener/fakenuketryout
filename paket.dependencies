@@ -12,3 +12,4 @@ group NetcoreBuild
     nuget Fake.Core.Target prerelease
     nuget Fake.DotNet.Cli prerelease
     nuget Fake.IO.FileSystem prerelease
+    nuget Fake.DotNet.Xamarin prerelease
