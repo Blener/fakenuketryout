@@ -8,7 +8,7 @@ let pclBuildDir = Path.getFullName "./FakeNukeTryout/bin/Debug"
 let pclDir = Path.getFullName "./FakeNukeTryout" 
 let androidBuildDir = Path.getFullName "./FakeNukeTryout.Android/bin/Debug"
 let androidProj = Path.getFullName "./FakeNukeTryout.Android/FakeNukeTryout.Android.fsproj"
-let apkOutputFile = Path.getFullName (sprintf "%s/*.apk" androidBuildDir)
+let apkOutputFile = Path.getFullName "./FakeNukeTryout.Android/bin/*/*.apk"
 let artifactsFolder = Path.getFullName "./artifacts"
 
 let runDotNet cmd dir =
@@ -37,7 +37,7 @@ Target.create "CleanAndroid" (fun _ ->
 
 Target.create "BuildAndroid" (fun _ ->
     let setParameters (defaults: MSBuildParams) =
-        { defaults with Verbosity = Some(Quiet)
+        { defaults with Verbosity = Some(Detailed)
                         Targets = ["Build"]
                         Properties = [ "Configuration", "Debug" ] }
     MSBuild.build setParameters androidProj
