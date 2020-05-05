@@ -28,7 +28,7 @@ Target.create "EnsureCleanFolders" (fun _ ->
 )
 
 Target.create "RestorePackages" (fun _ ->
-    NuGet.Restore.RestorePackages()
+    runDotNet "restore" "./"
     Trace.trace @"---Packages Restored---"
 )
 
