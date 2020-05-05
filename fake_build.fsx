@@ -27,6 +27,11 @@ Target.create "EnsureCleanFolders" (fun _ ->
     Trace.trace @"---Artifacts folder cleaned"
 )
 
+Target.create "RestorePackages" (fun _ ->
+    NuGet.Restore.RestorePackages()
+    Trace.trace @"---Packages Restored---"
+)
+
 Target.create "BuildAndroid" (fun _ ->
     AndroidPackage (fun defaults ->
         { defaults with 
@@ -37,6 +42,6 @@ Target.create "BuildAndroid" (fun _ ->
     Trace.trace @"---Android project builded---"
 )
 
-"EnsureCleanFolders" ==> "BuildAndroid"
+"EnsureCleanFolders" ==> "RestorePackages" ==> "BuildAndroid"
 
 Target.runOrDefault "BuildAndroid"
